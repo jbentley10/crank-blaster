@@ -1,4 +1,3 @@
-
 local gfx = playdate.graphics
 
 Bullet = {}

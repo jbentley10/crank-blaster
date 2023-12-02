@@ -1,59 +1,50 @@
 import "gameOverScene"
 import "sprites/bullet"
+import "sprites/player"
+import "sprites/enemy"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
-local bulletspeed = 16
-
 class('GameScene').extends(gfx.sprite)
 
 function GameScene:init()
+	-- Add the background image
 	local backgroundImage = gfx.image.new("images/main-ui-background")
-	gfx.sprite.setBackgroundDrawingCallback(function()
-		backgroundImage:draw(0, 0)
-	end)
+	local backgroundSprite = gfx.sprite.new(backgroundImage)
+	backgroundSprite:moveTo(200, 120)
+	backgroundSprite:add()
 
-	local playerSprite = gfx.image.new("images/player--1")
-	self.player = gfx.sprite.new(playerSprite)
-	self.player:moveTo(200, 120)
-	self.player:add()
-
-	self.playerSpeed = 2
-
-	self:add()
+	-- Add the player
+	local player = Player:new()
+	
+	-- Add the enemy
+	local enemy = Enemy:new()
+	local dx, dy = 200, 120
+	local enemySpeed = 2
+	-- Start the enemy position randomly
+	enemy:moveTo(400, math.random(0, 240))
+	enemy:setVelocity(1 + enemySpeed * math.cos(math.rad(300)), 1 + enemySpeed * math.sin(math.rad(400)))
+	enemy:addSprite()
 end
 
--- SCENE_MANAGER:switchScene(GameOverScene, "Score: 100")
+	-- Switch to the GameOverScene 
+	-- SCENE_MANAGER:switchScene(GameOverScene, "Score: 100")
 
-function GameScene:update()
-	local crankPosition = pd.getCrankPosition()
+function GameScene:update(dt)
+	-- Spawn a new enemy every second
+	local enemySpawnTimer = 0
+	local enemySpawnInterval = 3 -- in seconds
 
-	-- Switch to the GameOverScene when the A button is pressed
-	if pd.buttonJustPressed(pd.kButtonA) then
-		local playerX, playerY = self.player:getPosition()
-		-- Fire a projectile
-		local b = Bullet:new()
-		local dx, dy = 0, 0
-		b:moveTo(playerX-1, playerY-1)
-		b:setVelocity(dx + bulletspeed * math.cos(math.rad(crankPosition)), dy + bulletspeed * math.sin(math.rad(crankPosition)))
-		b:addSprite()
+	enemySpawnTimer = enemySpawnTimer + dt
+	if enemySpawnTimer >= enemySpawnInterval then
+		enemySpawnTimer = enemySpawnTimer - enemySpawnInterval
+		local enemy = Enemy:new()
+		local dx, dy = 200, 120
+		local enemySpeed = 2
+		-- Start the enemy position randomly
+		enemy:moveTo(400, math.random(0, 240))
+		enemy:setVelocity(1 + enemySpeed * math.cos(math.rad(300)), 1 + enemySpeed * math.sin(math.rad(400)))
+		enemy:addSprite()
 	end
-
-	-- Set the power-up
-	-- if pd.buttonIsPressed(pd.kButtonUp) then
-		
-	-- end
-	-- if pd.buttonIsPressed(pd.kButtonRight) then
-		
-	-- end
-	-- if pd.buttonIsPressed(pd.kButtonDown) then
-		
-	-- end
-	-- if pd.buttonIsPressed(pd.kButtonLeft) then
-		
-	-- end
-	-- Rotate the player sprite using the crank
-	print(crankPosition)
-	self.player:setRotation(crankPosition)
 end
