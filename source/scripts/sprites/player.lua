@@ -4,8 +4,10 @@ local gfx <const> = playdate.graphics
 -- Define the player class
 Player = {}
 
+class('Player').extends(Object)
+
 -- Initialize the player
-function Player:new()
+function Player:init()
 	-- Load the player image
 	local playerImage = gfx.image.new("images/player--1")
 	assert(playerImage)
@@ -30,14 +32,8 @@ function Player:new()
 		self:setRotation(crankPosition)
 
 		if pd.buttonJustPressed(pd.kButtonA) then
-			local playerX, playerY = self:getPosition()
 			-- Fire a projectile
-			local b = Bullet:new()
-			local dx, dy = 0, 0
-			local bulletspeed = 16
-			b:moveTo(playerX-1, playerY-1)
-			b:setVelocity(dx + bulletspeed * math.cos(math.rad(crankPosition)), dy + bulletspeed * math.sin(math.rad(crankPosition)))
-			b:addSprite()
+			local b = Bullet(self.x, self.y, crankPosition)
 		end
 	end
 

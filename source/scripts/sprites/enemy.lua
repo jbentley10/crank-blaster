@@ -3,16 +3,26 @@ local gfx <const> = playdate.graphics
 
 -- Define the enemy class
 Enemy = {}
+Enemy.__index = Enemy
 
--- Initialize the enemy
-function Enemy:new()
+class('Enemy').extends(Object)
+
+-- Initialize the enemy	
+function Enemy:init()
+	-- Initialization
 	-- Load the enemy image
 	local enemyImage = gfx.image.new("images/enemy-1")
 	assert(enemyImage)
 
 	-- Create the enemy sprite
 	local self = gfx.sprite.new(enemyImage)
+	self.type = "enemy"
 	self:setCollideRect(0, 0, 32, 32)
+	local dx, dy = 200, 120
+	local enemySpeed = 2
+	-- Start the enemy position randomly
+	self:moveTo(400, math.random(0, 240))
+	self:addSprite()
 
 	-- Set the velocity towards the player
 	function self:setVelocity(playerX, playerY)
@@ -31,6 +41,8 @@ function Enemy:new()
 		self.dy = unitY * speed
 	end
 
+	self:setVelocity(1 + enemySpeed * math.cos(math.rad(300)), 1 + enemySpeed * math.sin(math.rad(400)))
+
 	-- Update the enemy
 	function self:update()
 		-- Move the enemy
@@ -42,15 +54,6 @@ function Enemy:new()
 	end
 
 	self:add()
-
-	function self:update()
-		-- Move the enemy
-    local x, y, c, n = self:moveWithCollisions(self.x + self.dx, self.y + self.dy)
-
-    -- Update the enemy's position
-    self.x = x
-    self.y = y
-	end
 
 	-- Return the enemy class
 	return self
