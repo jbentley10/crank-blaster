@@ -54,7 +54,6 @@ function Bullet:init(playerX, playerY, crankPosition)
 	-- Set collision responses
 	function self:collisionResponse(other)
 		if other:isa(Enemy) then
-			print('enemy collision')
 			other:remove()
 			self:remove()
 			return "overlap"

@@ -16,10 +16,17 @@ function Enemy:init()
 
 	-- Create the enemy sprite
 	local self = gfx.sprite.new(enemyImage)
+
+	-- Set the type (used for collision detection)
 	self.type = "enemy"
+
+	-- Set the enemy's size and collision rectangle
 	self:setCollideRect(0, 0, 32, 32)
+
+	-- Set the enemy's velocity
 	local dx, dy = 200, 120
 	local enemySpeed = 2
+	
 	-- Start the enemy position randomly
 	self:moveTo(400, math.random(0, 240))
 	self:addSprite()

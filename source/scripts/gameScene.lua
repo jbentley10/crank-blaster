@@ -19,40 +19,19 @@ function GameScene:init()
 	local player = Player()
 	-- Add the enemy
 	local enemy = Enemy()
+
+	pd.timer.keyRepeatTimerWithDelay(3000, 2000, function()
+		-- Code to execute every 3 seconds
+		-- Add another enemy
+		print('going!')
+		local newEnemy = Enemy()
+	end)
 end
 
 	-- Switch to the GameOverScene 
 	-- SCENE_MANAGER:switchScene(GameOverScene, "Score: 100")
 
 function GameScene:update(dt)
-	-- Spawn a new enemy every second
-	local enemySpawnTimer = 0
-	local enemySpawnInterval = 3 -- in seconds
-
-	enemySpawnTimer = enemySpawnTimer + dt
-	if enemySpawnTimer >= enemySpawnInterval then
-		enemySpawnTimer = enemySpawnTimer - enemySpawnInterval
-		local enemy = Enemy()
-		local dx, dy = 200, 120
-		local enemySpeed = 2
-		-- Start the enemy position randomly
-		enemy:moveTo(400, math.random(0, 240))
-		enemy:setVelocity(1 + enemySpeed * math.cos(math.rad(300)), 1 + enemySpeed * math.sin(math.rad(400)))
-		enemy:addSprite()
-	end
-
-	-- Check for collisions between bullets and enemies
-	for i = #Bullet.bullets, 1, -1 do
-		local bullet = Bullet.bullets[i]
-		for j = #Enemy.enemies, 1, -1 do
-			local enemy = Enemy.enemies[j]
-			if bullet:collidesWith(enemy) then
-				bullet:removeSprite()
-				enemy:removeSprite()
-				table.remove(Bullet.bullets, i)
-				table.remove(Enemy.enemies, j)
-				break
-			end
-		end
-	end
+	-- Update the sprites
+	gfx.sprite.update()
 end
