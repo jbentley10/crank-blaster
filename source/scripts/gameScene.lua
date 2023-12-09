@@ -9,21 +9,23 @@ local gfx <const> = playdate.graphics
 class('GameScene').extends(gfx.sprite)
 
 function GameScene:init()
+	print("Scene update: Game scene")
+	-- LOAD THE GAME
 	-- Add the background image
 	local backgroundImage = gfx.image.new("images/main-ui-background")
 	local backgroundSprite = gfx.sprite.new(backgroundImage)
 	backgroundSprite:moveTo(200, 120)
 	backgroundSprite:add()
 
-	-- Add the player
+	-- Add the player and enemy instances
 	local player = Player()
-	-- Add the enemy
 	local enemy = Enemy()
 
-	pd.timer.keyRepeatTimerWithDelay(3000, 2000, function()
-		-- Code to execute every 3 seconds
+	-- Spawn enemies at regular intervals
+	-- First param is inital, second is regular intervals
+	-- Default: 3000, 2000
+	pd.timer.keyRepeatTimerWithDelay(3000, 500, function()
 		-- Add another enemy
-		print('going!')
 		local newEnemy = Enemy()
 	end)
 end

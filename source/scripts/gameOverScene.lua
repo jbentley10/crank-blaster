@@ -6,14 +6,33 @@ local gfx <const> = playdate.graphics
 class('GameOverScene').extends(gfx.sprite)
 
 function GameOverScene:init(text)
-    -- local text = "Game Over"
-    local gameOverImage = gfx.image.new(gfx.getTextSize(text))
-    gfx.pushContext(gameOverImage)
-        gfx.drawText(text, 0, 0)
+    print('Scene update: Game over screen')
+    -- Generate prompt text
+    local text2 = "Press A to play again!"
+
+    -- Set images 
+    local scoreImage = gfx.image.new(gfx.getTextSize(text))
+    local promptImage = gfx.image.new(gfx.getTextSize(text2))
+
+    -- Push context and draw
+    -- SCORE
+    gfx.pushContext(scoreImage)
+    gfx.drawText(text, 0, 0)
     gfx.popContext()
-    local gameOverSprite = gfx.sprite.new(gameOverImage)
-    gameOverSprite:moveTo(200, 120)
-    gameOverSprite:add()
+    -- PROMPT
+    gfx.pushContext(promptImage)
+    gfx.drawText(text2, 0, 0)
+    gfx.popContext()
+
+    -- Add the sprites
+    local scoreSprite = gfx.sprite.new(scoreImage)
+    local promptSprite = gfx.sprite.new(promptImage)
+
+    -- Move sprites
+    scoreSprite:moveTo(200, 120)
+    scoreSprite:add()
+    promptSprite:moveTo(200, 160)
+    promptSprite:add()
 
     self:add()
 end

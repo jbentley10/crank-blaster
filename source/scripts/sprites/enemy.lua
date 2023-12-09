@@ -21,11 +21,10 @@ function Enemy:init()
 	self.type = "enemy"
 
 	-- Set the enemy's size and collision rectangle
-	self:setCollideRect(0, 0, 32, 32)
+	self:setCollideRect(5, 5, 22, 25)
 
 	-- Set the enemy's velocity
 	local dx, dy = 200, 120
-	local enemySpeed = 2
 	
 	-- Start the enemy position randomly
 	self:moveTo(400, math.random(0, 240))
@@ -43,12 +42,13 @@ function Enemy:init()
 		local unitY = dy / length
 
 		-- Multiply the unit vector by the desired speed to get the velocity
-		local speed = 1 -- Adjust this value to change the speed
+		-- Enemy speeds: 1, 5, 8
+		local speed = 8 -- Adjust this value to change the speed
 		self.dx = unitX * speed
 		self.dy = unitY * speed
 	end
 
-	self:setVelocity(1 + enemySpeed * math.cos(math.rad(300)), 1 + enemySpeed * math.sin(math.rad(400)))
+	self:setVelocity(1 * math.cos(math.rad(300)), 1 * math.sin(math.rad(400)))
 
 	-- Update the enemy
 	function self:update()
@@ -58,6 +58,26 @@ function Enemy:init()
 		-- Update the enemy's position
 		self.x = x
 		self.y = y
+	end
+
+	-- Set collision responses
+	function self:collisionResponse(other)
+		if other.type == "player" then
+			print('Enemy: hit player')
+			-- Remove 1 life from the player
+			playerLives = playerLives - 1
+			print("Lives remaining: " .. playerLives)
+			self:remove()
+
+			-- Check if the player has run out of lives
+			if playerLives == 0 then
+				-- Switch to the GameOverScene
+				SCENE_MANAGER:switchScene(GameOverScene, "Score: " .. playerScore)
+			end
+			return "overlap"
+		else
+			return "overlap"	
+		end
 	end
 
 	self:add()

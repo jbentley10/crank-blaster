@@ -10,6 +10,10 @@ import "scripts/gameScene"
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
+-- Instantiate game variables 
+playerLives = 3
+playerScore = 0
+
 SCENE_MANAGER = SceneManager()
 
 GameScene()

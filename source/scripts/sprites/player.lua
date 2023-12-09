@@ -14,7 +14,11 @@ function Player:init()
 
 	-- Create the player sprite
 	local self = gfx.sprite.new(playerImage)
-	self:setCollideRect(0, 0, 32, 32)
+
+	-- Set the type (used for collision detection)
+	self.type = "player"
+
+	self:setCollideRect(5, 9, 22, 15)
 	self:moveTo(200, 120)
 	self:add()
 

@@ -11,6 +11,9 @@ class('Bullet').extends(Object)
 function Bullet:init(playerX, playerY, crankPosition)
 	-- Create the bullet sprite
 	local self = playdate.graphics.sprite:new()
+
+	-- Set the type (used for collision detection)
+	self.type = "bullet"
 	
 	-- Set the bullet's size and collision rectangle
 	self:setSize(5, 5)
@@ -34,30 +37,25 @@ function Bullet:init(playerX, playerY, crankPosition)
 	
 	function self:update()
 		-- Move the bullet
+		print('Bullet: moving')
 		local x,y,c,n = self:moveWithCollisions(self.x + self.dx, self.y + self.dy)
-		
-		-- Check for collisions with asteroids
-		for i=1,n do
-			local other = c[i].other
-			if other.type == "enemy" then
-				other:remove()
-				self:remove()
-			end
-		end
 		
 		-- Remove the bullet if it goes offscreen
 		if self.x < 0 or self.x > 400 or self.y < 0 or self.y > 240 or self.removeme then
+			print('Bullet: offscreen')
 			self:remove()
 		end
 	end
 
 	-- Set collision responses
 	function self:collisionResponse(other)
-		if other:isa(Enemy) then
+		if other.type == "enemy" then
+			print('Bullet: hit enemy')
 			other:remove()
 			self:remove()
 			return "overlap"
 		else
+			print('Bullet: hit else')
 			return "overlap"	
 		end
 	end
