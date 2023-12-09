@@ -24,5 +24,8 @@ function pd.update()
 	gfx.sprite.update()
 
 	-- Add dynamic UI elements
-	gfx.drawText("Left " .. enemiesLeft, 100, 217)
+	-- GAME SCENE
+	if SCENE_MANAGER.currentScene == gameScene then
+		gfx.drawText("Left " .. enemiesLeft, 100, 217)
+end
 end
