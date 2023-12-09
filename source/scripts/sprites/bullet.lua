@@ -59,8 +59,15 @@ function Bullet:init(playerX, playerY, crankPosition)
 			if self and self.remove then
 				self:remove()
 			end
+
+			if enemiesLeft == 0 then
+				SCENE_MANAGER:changeScene(GameOverScene())
+			end
 			
 			return "overlap"
+		elseif other.type == "ui" then
+			self:remove()
+			return "freeze"
 		else
 			print('Bullet: hit else')
 			return "overlap"	

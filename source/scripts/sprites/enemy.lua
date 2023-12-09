@@ -27,14 +27,28 @@ function Enemy:init()
 	local dx, dy = 200, 120
 	
 	-- Start the enemy position randomly
-	self:moveTo(400, math.random(0, 240))
+	-- Choose ranodmly either left (0) or right (1)
+	local leftOrRight = math.random(0, 1)
+	-- Pick either 0 or 400 based on choice
+	local position = leftOrRight == 0 and 0 or 400
+	-- Position the enemy
+	self:moveTo(position, math.random(0, 240))
 	self:addSprite()
 
 	-- Set the velocity towards the player
-	function self:setVelocity(playerX, playerY)
+	function self:setVelocity(playerX, playerY, position)
 		-- Calculate the direction vector
-		local dx = playerX - self.x
-		local dy = playerY - self.y
+		local dx = nil;
+		local dy = nil;
+		-- Take in the enemy's position to determine if it moves
+		-- towards the player or away from the player
+		if (position == 0) then
+			dx = playerX + self.x
+			dy = playerY + self.y
+		else
+			dx = playerX - self.x
+			dy = playerY - self.y
+		end
 
 		-- Normalize the direction vector to get a unit vector
 		local length = math.sqrt(dx * dx + dy * dy)
@@ -46,6 +60,8 @@ function Enemy:init()
 		local speed = 1 -- Adjust this value to change the speed
 		self.dx = unitX * speed
 		self.dy = unitY * speed
+
+		print("Enemy: dx = " .. self.dx .. ", dy = " .. self.dy)
 	end
 
 	self:setVelocity(1 * math.cos(math.rad(300)), 1 * math.sin(math.rad(400)))
@@ -75,6 +91,8 @@ function Enemy:init()
 				SCENE_MANAGER:switchScene(GameOverScene, "Enemies hit: " .. playerScore)
 			end
 			return "overlap"
+		elseif other.type == "ui" then
+			return "slide"
 		else
 			return "overlap"	
 		end

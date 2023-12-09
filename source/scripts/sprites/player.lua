@@ -27,10 +27,35 @@ function Player:init()
 		local crankPosition = pd.getCrankPosition()
 
 		-- Set the power-ups
-		-- if pd.buttonIsPressed(pd.kButtonUp) then
-		-- ...
-		-- end
-		-- ...
+		gfx.setColor(gfx.kColorBlack)
+		if pd.buttonIsPressed(pd.kButtonUp) then
+			-- Draw a rectangle around the shield power up
+			gfx.drawRect(30, 190, 15, 15)
+			print('Power up active: Shield')
+			-- Store new power up value
+			-- Add shield value
+		end
+		if pd.buttonIsPressed(pd.kButtonLeft) then
+			-- Draw a rectangle around the shield power up
+			gfx.drawRect(8, 208, 15, 15)
+			print('Power up active: Infinite')
+			-- Store new power up value
+			-- Add shield value
+		end
+		if pd.buttonIsPressed(pd.kButtonRight) then
+			-- Draw a rectangle around the shield power up
+			gfx.drawRect(47, 204, 15, 15)
+			print('Power up active: Crosshair')
+			-- Store new power up value
+			-- Add shield value
+		end
+		if pd.buttonIsPressed(pd.kButtonDown) then
+			-- Draw a rectangle around the shield power up
+			gfx.drawRect(30, 190, 15, 15)
+			print('Power up active: ?')
+			-- Store new power up value
+			-- Add shield value
+		end
 
 		-- Rotate the player sprite using the crank
 		self:setRotation(crankPosition)

@@ -24,6 +24,24 @@ function GameScene:init()
 	local player = Player()
 	local enemy = Enemy()
 
+	-- Draw collision rects around UI elements
+	local chargeUICollisionRect = gfx.sprite.new()
+	local powerUpSelectUICollisionRect = gfx.sprite.new()
+	chargeUICollisionRect.type = "ui"
+	powerUpSelectUICollisionRect.type = "ui"
+
+	chargeUICollisionRect:moveTo(370, 215)
+	powerUpSelectUICollisionRect:moveTo(30, 215)
+
+	chargeUICollisionRect:setSize(80, 60)
+	powerUpSelectUICollisionRect:setSize(80, 60)
+	
+	chargeUICollisionRect:setCollideRect(0, 0, 80, 60)
+	powerUpSelectUICollisionRect:setCollideRect(0, 0, 80, 60)
+
+	chargeUICollisionRect:add()
+	powerUpSelectUICollisionRect:add()
+
 	-- Spawn enemies at regular intervals
 	-- First param is inital, second is regular intervals
 	-- Default: 3000, 2000
