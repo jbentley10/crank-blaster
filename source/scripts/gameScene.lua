@@ -24,22 +24,11 @@ function GameScene:init()
 	local player = Player()
 	local enemy = Enemy()
 
-	-- Add dynamic UI elements
-	gfx.drawText(enemiesLeft, 300, 10)
-
 	-- Spawn enemies at regular intervals
 	-- First param is inital, second is regular intervals
 	-- Default: 3000, 2000
-	pd.timer.keyRepeatTimerWithDelay(3000, 500, function()
+	pd.timer.keyRepeatTimerWithDelay(3000, 2000, function()
 		-- Add another enemy
 		local newEnemy = Enemy()
 	end)
-end
-
-	-- Switch to the GameOverScene 
-	-- SCENE_MANAGER:switchScene(GameOverScene, "Score: 100")
-
-function GameScene:update(dt)
-	-- Update the sprites
-	gfx.sprite.update()
 end

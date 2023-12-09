@@ -42,8 +42,8 @@ function Enemy:init()
 		local unitY = dy / length
 
 		-- Multiply the unit vector by the desired speed to get the velocity
-		-- Enemy speeds: 1, 5, 8
-		local speed = 8 -- Adjust this value to change the speed
+		-- Default enemy speed: 1
+		local speed = 1 -- Adjust this value to change the speed
 		self.dx = unitX * speed
 		self.dy = unitY * speed
 	end
@@ -72,7 +72,7 @@ function Enemy:init()
 			-- Check if the player has run out of lives
 			if playerLives == 0 then
 				-- Switch to the GameOverScene
-				SCENE_MANAGER:switchScene(GameOverScene, "Score: " .. playerScore)
+				SCENE_MANAGER:switchScene(GameOverScene, "Enemies hit: " .. playerScore)
 			end
 			return "overlap"
 		else

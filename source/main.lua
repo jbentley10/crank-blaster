@@ -22,4 +22,7 @@ GameScene()
 function pd.update()
 	pd.timer.updateTimers()
 	gfx.sprite.update()
+
+	-- Add dynamic UI elements
+	gfx.drawText("Left " .. enemiesLeft, 100, 217)
 end
