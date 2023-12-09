@@ -43,7 +43,9 @@ function Bullet:init(playerX, playerY, crankPosition)
 		-- Remove the bullet if it goes offscreen
 		if self.x < 0 or self.x > 400 or self.y < 0 or self.y > 240 or self.removeme then
 			print('Bullet: offscreen')
-			self:remove()
+			if self and self.remove then
+				self:remove()
+			end
 		end
 	end
 
@@ -51,8 +53,13 @@ function Bullet:init(playerX, playerY, crankPosition)
 	function self:collisionResponse(other)
 		if other.type == "enemy" then
 			print('Bullet: hit enemy')
+			playerScore = playerScore + 1
+			enemiesLeft = enemiesLeft - 1
 			other:remove()
-			self:remove()
+			if self and self.remove then
+				self:remove()
+			end
+			
 			return "overlap"
 		else
 			print('Bullet: hit else')

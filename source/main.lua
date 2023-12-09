@@ -11,8 +11,9 @@ local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
 -- Instantiate game variables 
-playerLives = 3
-playerScore = 0
+playerScore = nil
+playerLives = nil
+enemiesLeft = nil
 
 SCENE_MANAGER = SceneManager()
 

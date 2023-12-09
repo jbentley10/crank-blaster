@@ -10,6 +10,9 @@ class('GameScene').extends(gfx.sprite)
 
 function GameScene:init()
 	print("Scene update: Game scene")
+	playerScore = 0
+	playerLives = 3
+	enemiesLeft = 5
 	-- LOAD THE GAME
 	-- Add the background image
 	local backgroundImage = gfx.image.new("images/main-ui-background")
@@ -20,6 +23,9 @@ function GameScene:init()
 	-- Add the player and enemy instances
 	local player = Player()
 	local enemy = Enemy()
+
+	-- Add dynamic UI elements
+	gfx.drawText(enemiesLeft, 300, 10)
 
 	-- Spawn enemies at regular intervals
 	-- First param is inital, second is regular intervals
