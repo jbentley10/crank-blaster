@@ -5,6 +5,8 @@ class('LevelCompleteScene').extends(gfx.sprite)
 
 function LevelCompleteScene:init()
     print("Scene update: Level complete")
+
+    pd.display.loadImage("images/main-ui-background")
     
     -- Create text content
     local titleText = "Level Complete!"

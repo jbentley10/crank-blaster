@@ -2,6 +2,6 @@ name=CrankBlaster
 author=John Bentley
 description=Blast away enemies using the crank!
 bundleID=com.bentley.b360
-version=1.8
+version=1.8.2
 buildNumber=1
 imagePath=images/

@@ -31,7 +31,7 @@ function Enemy:init(playerX, playerY)
     end
 
     if #enemyPool < ENEMY_POOL_SIZE then
-        local enemyImage = gfx.image.new("images/enemy-1")
+        local enemyImage = gfx.image.new("images/enemy")
         assert(enemyImage)
 
         local self = gfx.sprite.new(enemyImage)

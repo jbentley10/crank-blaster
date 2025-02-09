@@ -7,7 +7,7 @@ function Player:init()
     Player.super.init(self)
     
     -- Load and verify image
-    local playerImage = gfx.image.new("images/player--1.png")
+    local playerImage = gfx.image.new("images/player.png")
     assert(playerImage, "Failed to load player image")
     print("Player image loaded:", playerImage:getSize())
 
