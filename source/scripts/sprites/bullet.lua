@@ -74,15 +74,22 @@ function Bullet:init(playerX, playerY, crankPosition)
                 PlayerScore = PlayerScore + 1
                 EnemiesLeft = EnemiesLeft - 1
                 other:remove()
-                self:deactivate()  -- Instead of removing, just deactivate
-
-                if EnemiesLeft == 0 then
-                    SCENE_MANAGER:changeScene(GameOverScene())
+                self:deactivate()
+        
+                -- Check for level completion
+                if EnemiesLeft <= 0 then
+                    -- Clean up active bullets before scene switch
+                    for _, bullet in ipairs(bulletPool) do
+                        if bullet:isVisible() then
+                            bullet:deactivate()
+                        end
+                    end
+                    SCENE_MANAGER:switchScene(LevelCompleteScene)
                 end
                 
                 return "overlap"
             elseif other.type == "ui" then
-                self:deactivate()  -- Instead of removing, just deactivate
+                self:deactivate()
                 return "freeze"
             else
                 return "overlap"    

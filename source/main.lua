@@ -4,8 +4,10 @@ import "CoreLibs/sprites"
 import "CoreLibs/timer"
 
 import "scripts/sceneManager"
+import "scripts/titleScene"
 import "scripts/gameScene"
 import "scripts/gameOverScene"
+import "scripts/levelComplete"  -- Add this line
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
@@ -22,7 +24,7 @@ gfx.setFont(gradius)
 -- Load scene manager
 SCENE_MANAGER = SceneManager()
 
-GameScene()
+TitleScene()
 
 function pd.update()
 	pd.timer.updateTimers()

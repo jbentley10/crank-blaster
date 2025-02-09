@@ -105,15 +105,12 @@ function Enemy:init(playerX, playerY)
                 PlayerLives -= 1
                 print("Lives remaining: " .. PlayerLives)
                 self:remove()
-
-                if PlayerLives == 0 then
-                    SCENE_MANAGER:switchScene(GameOverScene, "Enemies hit: " .. PlayerScore)
+        
+                if PlayerLives <= 0 then
+                    -- Use switchScene consistently
+                    SCENE_MANAGER:switchScene(GameOverScene, "Score: " .. PlayerScore)
                 end
                 return "overlap"
-            elseif other.type == "ui" then
-                return "slide"
-            else
-                return "overlap"    
             end
         end
 

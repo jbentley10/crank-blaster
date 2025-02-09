@@ -1,48 +1,58 @@
-import "gameScene"
-
-GameOverScene = {}
-
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
 class('GameOverScene').extends(gfx.sprite)
 
-function GameOverScene:init(text)
+function GameOverScene:init(scoreText)
     print('Scene update: Game over screen')
-    -- Generate prompt text
-    local text2 = "Press A to play again!"
+    
+    -- Set default text if none provided
+    scoreText = scoreText or "Game Over! Score: " .. PlayerScore
+    local promptText = "Press A to play again!"
 
-    -- Set images 
-    local scoreImage = gfx.image.new(gfx.getTextSize(text))
-    local promptImage = gfx.image.new(gfx.getTextSize(text2))
+    -- Calculate text dimensions first
+    local textWidth, textHeight = gfx.getTextSize(scoreText)
+    local promptWidth, promptHeight = gfx.getTextSize(promptText)
 
-    -- Push context and draw
-    -- SCORE
+    -- Create images with proper dimensions
+    local scoreImage = gfx.image.new(textWidth, textHeight)
+    local promptImage = gfx.image.new(promptWidth, promptHeight)
+
+    -- Verify images were created successfully
+    assert(scoreImage, "Failed to create score image")
+    assert(promptImage, "Failed to create prompt image")
+
+    -- Draw text to images
     gfx.pushContext(scoreImage)
-    gfx.drawText(text, 0, 0)
-    gfx.popContext()
-    -- PROMPT
-    gfx.pushContext(promptImage)
-    gfx.drawText(text2, 0, 0)
+        gfx.drawText(scoreText, 0, 0)
     gfx.popContext()
 
-    -- Add the sprites
+    gfx.pushContext(promptImage)
+        gfx.drawText(promptText, 0, 0)
+    gfx.popContext()
+
+    -- Create sprites with the images
     local scoreSprite = gfx.sprite.new(scoreImage)
     local promptSprite = gfx.sprite.new(promptImage)
 
-    -- Move sprites
+    -- Position sprites
     scoreSprite:moveTo(200, 120)
-    scoreSprite:add()
     promptSprite:moveTo(200, 160)
+
+    -- Add sprites to the display list
+    scoreSprite:add()
     promptSprite:add()
 
+    -- Add self to the display list
     self:add()
 end
 
 function GameOverScene:update()
     if pd.buttonJustPressed(pd.kButtonA) then
+        -- Reset game variables
+        PlayerScore = 0
+        PlayerLives = 3
+        EnemiesLeft = 5
         SCENE_MANAGER:switchScene(GameScene)
     end
 end
-
-return GameOverScene
