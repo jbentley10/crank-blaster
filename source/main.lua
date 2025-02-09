@@ -11,9 +11,9 @@ local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
 -- Instantiate game variables
-PlayerScore = nil
-PlayerLives = nil
-EnemiesLeft = nil
+PlayerScore = 0
+PlayerLives = 0
+EnemiesLeft = 0
 
 -- Load fonts
 local gradius = gfx.font.new("fonts/gradius")
@@ -31,12 +31,8 @@ function pd.update()
 	-- Add dynamic UI elements
 	-- GAME SCENE
 	-- Number of enemies remaining
-	if SCENE_MANAGER.currentScene == GameScene then
-		gfx.drawText("LEFT " .. EnemiesLeft, 10, 15)
-	end
+	gfx.drawText("LEFT " .. EnemiesLeft, 10, 15)
 
 	-- Number of lives remaining
-	if SCENE_MANAGER.currentScene == GameScene then
-		gfx.drawText("LIVES " .. PlayerLives, 10, 30)
-	end
+	gfx.drawText("LIVES " .. PlayerLives, 10, 30)
 end

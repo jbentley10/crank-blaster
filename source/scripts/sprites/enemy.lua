@@ -102,9 +102,9 @@ function Enemy:init(playerX, playerY)
 
         function self:collisionResponse(other)
             if other.type == "player" then
-                PlayerLives = PlayerLives - 1
+                PlayerLives -= 1
                 print("Lives remaining: " .. PlayerLives)
-                self:deactivate()
+                self:remove()
 
                 if PlayerLives == 0 then
                     SCENE_MANAGER:switchScene(GameOverScene, "Enemies hit: " .. PlayerScore)

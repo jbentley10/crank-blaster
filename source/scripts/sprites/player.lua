@@ -34,6 +34,8 @@ function Player:init()
     print("Player added to sprite system")
     
     self.isCollidingWithEnemy = false
+    self.isInvincible = false
+    self.invincibilityTimer = nil
 end
 
 -- Separate update function
@@ -66,5 +68,21 @@ function Player:update()
     if pd.buttonJustPressed(pd.kButtonA) then
         -- Fire a projectile
         local b = Bullet(self.x, self.y, crankPosition)
+    end
+end
+
+function Player:collisionResponse(other)
+    if other.type == "enemy" and not self.isInvincible then
+        PlayerLives -= 1
+        self.isInvincible = true
+        
+        -- Create invincibility timer
+        if self.invincibilityTimer then
+            self.invincibilityTimer:remove()
+        end
+        
+        self.invincibilityTimer = playdate.timer.new(1000, function()
+            self.isInvincible = false
+        end)
     end
 end
