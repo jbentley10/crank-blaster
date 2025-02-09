@@ -1,3 +1,4 @@
+SceneManager = {};
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
@@ -109,3 +110,5 @@ function SceneManager:removeAllTimers()
         timer:remove()
     end
 end
+
+return SceneManager

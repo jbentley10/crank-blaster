@@ -4,16 +4,16 @@ import "CoreLibs/sprites"
 import "CoreLibs/timer"
 
 import "scripts/sceneManager"
--- import "sceneManagerNoTransition"
 import "scripts/gameScene"
+import "scripts/gameOverScene"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
 -- Instantiate game variables
-playerScore = nil
-playerLives = nil
-enemiesLeft = nil
+PlayerScore = nil
+PlayerLives = nil
+EnemiesLeft = nil
 
 -- Load fonts
 local gradius = gfx.font.new("fonts/gradius")
@@ -31,12 +31,12 @@ function pd.update()
 	-- Add dynamic UI elements
 	-- GAME SCENE
 	-- Number of enemies remaining
-	if SCENE_MANAGER.currentScene == gameScene then
-		gfx.drawText("LEFT " .. enemiesLeft, 10, 15)
+	if SCENE_MANAGER.currentScene == GameScene then
+		gfx.drawText("LEFT " .. EnemiesLeft, 10, 15)
 	end
 
 	-- Number of lives remaining
-	if SCENE_MANAGER.currentScene == gameScene then
-		gfx.drawText("LIVES " .. playerLives, 10, 30)
+	if SCENE_MANAGER.currentScene == GameScene then
+		gfx.drawText("LIVES " .. PlayerLives, 10, 30)
 	end
 end

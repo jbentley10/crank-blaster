@@ -1,5 +1,7 @@
 import "gameScene"
 
+GameOverScene = {}
+
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
@@ -42,3 +44,5 @@ function GameOverScene:update()
         SCENE_MANAGER:switchScene(GameScene)
     end
 end
+
+return GameOverScene

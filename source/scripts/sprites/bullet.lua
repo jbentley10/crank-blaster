@@ -7,77 +7,99 @@ Bullet.__index = Bullet
 
 class('Bullet').extends(Object)
 
+-- Create a pool of inactive bullets
+local BULLET_POOL_SIZE = 30  -- Adjust this based on your needs
+local bulletPool = {}
+local activeCount = 0
+
 -- Initialize the bullet
 function Bullet:init(playerX, playerY, crankPosition)
-	-- Create the bullet sprite
-	local self = playdate.graphics.sprite:new()
+    -- Check if there's an inactive bullet in the pool we can reuse
+    for _, bullet in ipairs(bulletPool) do
+        if not bullet:isVisible() then
+            -- Reuse this bullet
+            bullet:setVisible(true)
+            bullet:moveTo(playerX-1, playerY-1)
+            bullet:setVelocity(0 + 16 * math.cos(math.rad(crankPosition)), 
+                             0 + 16 * math.sin(math.rad(crankPosition)))
+            return bullet
+        end
+    end
 
-	-- Set the type (used for collision detection)
-	self.type = "bullet"
-	
-	-- Set the bullet's size and collision rectangle
-	self:setSize(5, 5)
-	self:setCollideRect(0, 0, 5, 5)
+    -- If no inactive bullets found and pool isn't full, create a new one
+    if #bulletPool < BULLET_POOL_SIZE then
+        -- Create the bullet sprite
+        local self = gfx.sprite:new()
 
-	-- Set the bullet's velocity
-	local dx, dy = 0, 0
-	local bulletspeed = 16
+        -- Set the type (used for collision detection)
+        self.type = "bullet"
+        
+        -- Set the bullet's size and collision rectangle
+        self:setSize(5, 5)
+        self:setCollideRect(0, 0, 5, 5)
 
-	-- Move the bullet to the player's position
-	self:moveTo(playerX-1, playerY-1)
-	self:addSprite()
-	
-	function self:setVelocity(dx, dy, da)
-		self.dx = dx
-		self.dy = dy
-	end
+        -- Move the bullet to the player's position
+        self:moveTo(playerX-1, playerY-1)
+        self:addSprite()
+        
+        function self:setVelocity(dx, dy, da)
+            self.dx = dx
+            self.dy = dy
+        end
 
-	-- Set the velocity towards the player
-	self:setVelocity(dx + bulletspeed * math.cos(math.rad(crankPosition)), dy + bulletspeed * math.sin(math.rad(crankPosition)))
-	
-	function self:update()
-		-- Move the bullet
-		print('Bullet: moving')
-		local x,y,c,n = self:moveWithCollisions(self.x + self.dx, self.y + self.dy)
-		
-		-- Remove the bullet if it goes offscreen
-		if self.x < 0 or self.x > 400 or self.y < 0 or self.y > 240 or self.removeme then
-			print('Bullet: offscreen')
-			if self and self.remove then
-				self:remove()
-			end
-		end
-	end
+        -- Set the velocity towards the player
+        self:setVelocity(0 + 16 * math.cos(math.rad(crankPosition)), 
+                        0 + 16 * math.sin(math.rad(crankPosition)))
+        
+        function self:update()
+            -- Move the bullet
+            local x,y,c,n = self:moveWithCollisions(self.x + self.dx, self.y + self.dy)
+            
+            -- Instead of removing, just hide and reset position if offscreen
+            if self.x < 0 or self.x > 400 or self.y < 0 or self.y > 240 then
+                self:deactivate()
+            end
+        end
 
-	-- Set collision responses
-	function self:collisionResponse(other)
-		if other.type == "enemy" then
-			print('Bullet: hit enemy')
-			playerScore = playerScore + 1
-			enemiesLeft = enemiesLeft - 1
-			other:remove()
-			if self and self.remove then
-				self:remove()
-			end
+        function self:deactivate()
+            self:setVisible(false)
+            self:moveTo(playerX-1, playerY-1)  -- Reset position
+            self.dx = 0
+            self.dy = 0
+        end
 
-			if enemiesLeft == 0 then
-				SCENE_MANAGER:changeScene(GameOverScene())
-			end
-			
-			return "overlap"
-		elseif other.type == "ui" then
-			self:remove()
-			return "freeze"
-		else
-			print('Bullet: hit else')
-			return "overlap"	
-		end
-	end
+        -- Set collision responses
+        function self:collisionResponse(other)
+            if other.type == "enemy" then
+                PlayerScore = PlayerScore + 1
+                EnemiesLeft = EnemiesLeft - 1
+                other:remove()
+                self:deactivate()  -- Instead of removing, just deactivate
 
-	function self:draw()
-		gfx.setColor(gfx.kColorBlack)
-		gfx.fillRect(0, 0, 5, 5)
-	end
+                if EnemiesLeft == 0 then
+                    SCENE_MANAGER:changeScene(GameOverScene())
+                end
+                
+                return "overlap"
+            elseif other.type == "ui" then
+                self:deactivate()  -- Instead of removing, just deactivate
+                return "freeze"
+            else
+                return "overlap"    
+            end
+        end
 
-	return self
+        function self:draw()
+            gfx.setColor(gfx.kColorBlack)
+            gfx.fillRect(0, 0, 5, 5)
+        end
+
+        -- Add to pool
+        table.insert(bulletPool, self)
+        return self
+    end
+
+    -- If we reach here, the pool is full and all bullets are active
+    -- You might want to add some feedback here
+    return nil
 end

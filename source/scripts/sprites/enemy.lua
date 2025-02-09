@@ -7,99 +7,136 @@ Enemy.__index = Enemy
 
 class('Enemy').extends(Object)
 
--- Initialize the enemy	
-function Enemy:init()
-	-- Initialization
-	-- Load the enemy image
-	local enemyImage = gfx.image.new("images/enemy-1")
-	assert(enemyImage)
+-- Create a pool of inactive enemies
+local ENEMY_POOL_SIZE = 20
+local enemyPool = {}
 
-	-- Create the enemy sprite
-	local self = gfx.sprite.new(enemyImage)
+function Enemy:init(playerX, playerY)
+    -- Set default values if player position not provided
+    playerX = playerX or 200  -- Default to center of screen
+    playerY = playerY or 120
+    
+    -- Check for reusable enemy in pool
+    for _, enemy in ipairs(enemyPool) do
+        if not enemy:isVisible() then
+            enemy:setVisible(true)
+            local leftOrRight = math.random(0, 1)
+            local position = leftOrRight == 0 and 0 or 400
+            enemy:moveTo(position, math.random(0, 240))
+            enemy.dx = 0
+            enemy.dy = 0
+            enemy:setVelocity(playerX, playerY)
+            return enemy
+        end
+    end
 
-	-- Set the type (used for collision detection)
-	self.type = "enemy"
+    if #enemyPool < ENEMY_POOL_SIZE then
+        local enemyImage = gfx.image.new("images/enemy-1")
+        assert(enemyImage)
 
-	-- Set the enemy's size and collision rectangle
-	self:setCollideRect(5, 5, 22, 25)
+        local self = gfx.sprite.new(enemyImage)
+        self.type = "enemy"
+        self:setCollideRect(5, 5, 22, 25)
 
-	-- Set the enemy's velocity
-	local dx, dy = 200, 120
-	
-	-- Start the enemy position randomly
-	-- Choose ranodmly either left (0) or right (1)
-	local leftOrRight = math.random(0, 1)
-	-- Pick either 0 or 400 based on choice
-	local position = leftOrRight == 0 and 0 or 400
-	-- Position the enemy
-	self:moveTo(position, math.random(0, 240))
-	self:addSprite()
+        -- Initialize velocity variables
+        self.dx = 0
+        self.dy = 0
 
-	-- Set the velocity towards the player
-	function self:setVelocity(playerX, playerY, position)
-		-- Calculate the direction vector
-		local dx = nil;
-		local dy = nil;
-		-- Take in the enemy's position to determine if it moves
-		-- towards the player or away from the player
-		if (position == 0) then
-			dx = playerX + self.x
-			dy = playerY + self.y
-		else
-			dx = playerX - self.x
-			dy = playerY - self.y
-		end
+        local leftOrRight = math.random(0, 1)
+        local position = leftOrRight == 0 and 0 or 400
+        self:moveTo(position, math.random(0, 240))
+        self:addSprite()
 
-		-- Normalize the direction vector to get a unit vector
-		local length = math.sqrt(dx * dx + dy * dy)
-		local unitX = dx / length
-		local unitY = dy / length
+        function self:setVelocity(targetX, targetY)
+            -- Add safety checks
+            targetX = targetX or 200
+            targetY = targetY or 120
+            
+            -- Calculate direction vector from enemy to player
+            local dx = targetX - self.x
+            local dy = targetY - self.y
+            -- Normalize the direction vector
+            local length = math.sqrt(dx * dx + dy * dy)
+            if length > 0 then
+                local unitX = dx / length
+                local unitY = dy / length
 
-		-- Multiply the unit vector by the desired speed to get the velocity
-		-- Default enemy speed: 1
-		local speed = 1 -- Adjust this value to change the speed
-		self.dx = unitX * speed
-		self.dy = unitY * speed
+                local speed = 2
+                self.dx = unitX * speed
+                self.dy = unitY * speed
+            else
+                self.dx = 0
+                self.dy = 0
+            end
+        end
 
-		print("Enemy: dx = " .. self.dx .. ", dy = " .. self.dy)
-	end
+        function self:deactivate()
+            self:setVisible(false)
+            self.dx = 0
+            self.dy = 0
+        end
 
-	self:setVelocity(1 * math.cos(math.rad(300)), 1 * math.sin(math.rad(400)))
-
-	-- Update the enemy
-	function self:update()
-		-- Move the enemy
-		local x, y, c, n = self:moveWithCollisions(self.x + self.dx, self.y + self.dy)
-
-		-- Update the enemy's position
-		self.x = x
-		self.y = y
-	end
-
-	-- Set collision responses
-	function self:collisionResponse(other)
-		if other.type == "player" then
-			print('Enemy: hit player')
-			-- Remove 1 life from the player
-			playerLives = playerLives - 1
-			print("Lives remaining: " .. playerLives)
-			self:remove()
-
-			-- Check if the player has run out of lives
-			if playerLives == 0 then
-				-- Switch to the GameOverScene
-				SCENE_MANAGER:switchScene(GameOverScene, "Enemies hit: " .. playerScore)
+        function self:update()
+            if self.dx and self.dy then
+				-- Find the player sprite
+				local allSprites = gfx.sprite.getAllSprites()
+				local player = nil
+				for _, sprite in ipairs(allSprites) do
+					if sprite.type == "player" then
+						player = sprite
+						break
+					end
+				end
+				
+				-- Update velocity to move towards current player position
+				if player then
+					self:setVelocity(player.x, player.y)
+				end
+				
+				-- Move the enemy
+				local x, y, c, n = self:moveWithCollisions(self.x + self.dx, self.y + self.dy)
+				self.x = x
+				self.y = y
 			end
-			return "overlap"
-		elseif other.type == "ui" then
-			return "slide"
-		else
-			return "overlap"	
-		end
-	end
+        end
 
-	self:add()
+        function self:collisionResponse(other)
+            if other.type == "player" then
+                PlayerLives = PlayerLives - 1
+                print("Lives remaining: " .. PlayerLives)
+                self:deactivate()
 
-	-- Return the enemy class
-	return self
+                if PlayerLives == 0 then
+                    SCENE_MANAGER:switchScene(GameOverScene, "Enemies hit: " .. PlayerScore)
+                end
+                return "overlap"
+            elseif other.type == "ui" then
+                return "slide"
+            else
+                return "overlap"    
+            end
+        end
+
+        self:add()
+        
+        -- Set initial velocity
+        self:setVelocity(playerX, playerY)
+
+        table.insert(enemyPool, self)
+        return self
+    end
+end
+
+function Enemy:getPoolSize()
+    return #enemyPool
+end
+
+function Enemy:getActiveCount()
+    local count = 0
+    for _, enemy in ipairs(enemyPool) do
+        if enemy:isVisible() then
+            count = count + 1
+        end
+    end
+    return count
 end

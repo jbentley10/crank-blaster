@@ -1,9 +1,9 @@
-name=Crank Blaster
+name=CrankBlaster
 author=John Bentley
 description=Blast away enemies using the crank!
 bundleID=com.bentley.b360
 version=1.2
 buildNumber=1
 imagePath=images/
-pdxversion=20100
-buildtime=755473094
+pdxversion=20601
+buildtime=792377059
