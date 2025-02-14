@@ -1,12 +1,14 @@
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
 
+LevelCompleteScene = {}
+
 class('LevelCompleteScene').extends(gfx.sprite)
 
 function LevelCompleteScene:init()
     print("Scene update: Level complete")
 
-    pd.display.loadImage("images/main-ui-background")
+    gfx.image.new("images/main-ui-background"):draw(0,0)
     
     -- Create text content
     local titleText = "Level Complete!"
