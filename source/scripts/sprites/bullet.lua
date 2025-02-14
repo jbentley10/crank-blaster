@@ -73,7 +73,10 @@ function Bullet:init(playerX, playerY, crankPosition)
             if other.type == "enemy" then
                 PlayerScore = PlayerScore + 1
                 EnemiesLeft = EnemiesLeft - 1
-                other:remove()
+                -- Generate random numbers
+                local randomX = math.random(-50, -10)
+                local randomY = math.random(-50, -10)
+                other:moveTo(randomX, randomY)
                 self:deactivate()
         
                 -- Check for level completion
